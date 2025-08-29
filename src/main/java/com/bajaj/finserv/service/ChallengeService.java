@@ -83,14 +83,19 @@ public class ChallengeService {
             
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(accessToken);
+            headers.set("Authorization", accessToken); // Direct token without "Bearer " prefix
             
             HttpEntity<SolutionRequest> entity = new HttpEntity<>(solutionRequest, headers);
+            
+            System.out.println("Submitting solution to: " + TEST_WEBHOOK_BASE_URL);
+            System.out.println("Authorization token: " + accessToken.substring(0, Math.min(20, accessToken.length())) + "...");
+            System.out.println("Request body: " + solutionRequest.getFinalQuery());
             
             ResponseEntity<String> response = restTemplate.postForEntity(
                 TEST_WEBHOOK_BASE_URL, entity, String.class);
             
-            System.out.println("Solution submitted successfully");
+            System.out.println("Solution submitted successfully!");
+            System.out.println("Response Status: " + response.getStatusCode());
             System.out.println("Response: " + response.getBody());
             
         } catch (Exception e) {
